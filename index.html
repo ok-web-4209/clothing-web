@@ -303,8 +303,8 @@
         let currentColor = '#000000';
         let isARSupported = false;
         
-        // T-shirt GLB model as base64 (simplified geometry)
-        const tshirtGLB = 'data:application/octet-stream;base64,Z2xURgIAAADABwAAOAMAAEpTT057InNjZW5lIjowLCJub2RlcyI6WzBdLCJtZXNoZXMiOlt7InByaW1pdGl2ZXMiOlt7ImF0dHJpYnV0ZXMiOnsiUE9TSVRJT04iOjAsIk5PUk1BTCI6MSwiVEVYQ09PUkRfMCI6Mn0sImluZGljZXMiOjMsIm1hdGVyaWFsIjowfV19XSwibWF0ZXJpYWxzIjpbeyJwYnJNZXRhbGxpY1JvdWdobmVzcyI6eyJiYXNlQ29sb3JGYWN0b3IiOlsxLDEsMSwxXSwibWV0YWxsaWNGYWN0b3IiOjAsInJvdWdobmVzc0ZhY3RvciI6MC44fX1dLCJhY2Nlc3NvcnMiOlt7ImJ1ZmZlclZpZXciOjAsImNvbXBvbmVudFR5cGUiOjUxMjYsImNvdW50IjoyNCwidHlwZSI6IlZFQzMifSx7ImJ1ZmZlclZpZXciOjEsImNvbXBvbmVudFR5cGUiOjUxMjYsImNvdW50IjoyNCwidHlwZSI6IlZFQzMifSx7ImJ1ZmZlclZpZXciOjIsImNvbXBvbmVudFR5cGUiOjUxMjYsImNvdW50IjoyNCwidHlwZSI6IlZFQzIifSx7ImJ1ZmZlclZpZXciOjMsImNvbXBvbmVudFR5cGUiOjUxMjMsImNvdW50Ijo3MiwidHlwZSI6IlNDQUxBUiJ9XSwiYnVmZmVyVmlld3MiOlt7ImJ1ZmZlciI6MCwiYnl0ZU9mZnNldCI6MCwiYnl0ZUxlbmd0aCI6Mjg4fSx7ImJ1ZmZlciI6MCwiYnl0ZU9mZnNldCI6Mjg4LCJieXRlTGVuZ3RoIjoyODh9LHsiYnVmZmVyIjowLCJieXRlT2Zmc2V0Ijo1NzYsImJ5dGVMZW5ndGgiOjE5Mn0seyJidWZmZXIiOjAsImJ5dGVPZmZzZXQiOjc2OCwiYnl0ZUxlbmd0aCI6MTQ0fV0sImJ1ZmZlcnMiOlt7ImJ5dGVMZW5ndGgiOjkxMn1dfQAAAJADAABCSU4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=';
+        // Cloth T-shirt model - enhanced geometry for realistic cloth appearance
+        const clothModel = null; // Will create procedural cloth geometry instead
         
         // Initialize Three.js scene
         function initThreeJS() {
@@ -352,76 +352,128 @@
         }
         
         function createTShirtMesh() {
-            // Create a simple T-shirt shape using basic geometry
-            const geometry = new THREE.BufferGeometry();
+            // Create a detailed cloth T-shirt using multiple geometries for realistic appearance
+            const tshirtGroup = new THREE.Group();
             
-            // Define vertices for a basic T-shirt shape
-            const vertices = new Float32Array([
-                // Front face
-                -1, 1.5, 0.1,   1, 1.5, 0.1,   1, -1.5, 0.1,   -1, -1.5, 0.1,
-                // Back face  
-                -1, 1.5, -0.1,  1, 1.5, -0.1,  1, -1.5, -0.1,  -1, -1.5, -0.1,
-                // Sleeves
-                -2, 1.5, 0,     -1, 1, 0,      1, 1, 0,        2, 1.5, 0,
-                -2, 0.5, 0,     -1, 0.5, 0,    1, 0.5, 0,      2, 0.5, 0,
-                // Collar
-                -0.5, 1.5, 0,   0.5, 1.5, 0,   0.5, 1.8, 0,    -0.5, 1.8, 0,
-                -0.3, 1.8, 0,   0.3, 1.8, 0,   0.3, 2, 0,      -0.3, 2, 0
-            ]);
+            // Main body geometry with higher subdivision for cloth-like appearance
+            const bodyGeometry = createClothGeometry(32, 40, 2.0, 3.0);
             
-            const normals = new Float32Array([
-                // Front normals
-                0, 0, 1,  0, 0, 1,  0, 0, 1,  0, 0, 1,
-                // Back normals
-                0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
-                // Sleeve normals
-                0, 0, 1,  0, 0, 1,  0, 0, 1,  0, 0, 1,
-                0, 0, 1,  0, 0, 1,  0, 0, 1,  0, 0, 1,
-                // Collar normals
-                0, 0, 1,  0, 0, 1,  0, 0, 1,  0, 0, 1,
-                0, 0, 1,  0, 0, 1,  0, 0, 1,  0, 0, 1
-            ]);
+            // Sleeve geometries
+            const leftSleeveGeometry = createSleeveGeometry(16, 20, -1.8, 1.2, 0.8);
+            const rightSleeveGeometry = createSleeveGeometry(16, 20, 1.8, 1.2, 0.8);
             
-            const uvs = new Float32Array([
-                // Front UVs
-                0, 1,  1, 1,  1, 0,  0, 0,
-                // Back UVs
-                1, 1,  0, 1,  0, 0,  1, 0,
-                // Sleeve UVs
-                0, 1,  0.5, 0.8,  0.5, 0.8,  1, 1,
-                0, 0.5, 0.5, 0.5, 0.5, 0.5, 1, 0.5,
-                // Collar UVs
-                0.25, 1, 0.75, 1, 0.75, 1, 0.25, 1,
-                0.4, 1,  0.6, 1,  0.6, 1,  0.4, 1
-            ]);
+            // Collar geometry
+            const collarGeometry = createCollarGeometry(24, 0.3, 1.6);
             
-            const indices = [
-                // Front face
-                0, 1, 2,  0, 2, 3,
-                // Back face
-                4, 6, 5,  4, 7, 6,
-                // Sleeves
-                8, 9, 12, 9, 13, 12,
-                10, 11, 14, 11, 15, 14,
-                // Collar
-                16, 17, 20, 17, 21, 20,
-                20, 21, 22, 21, 23, 22
-            ];
-            
-            geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-            geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
-            geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-            geometry.setIndex(indices);
-            
-            // Create material
-            const material = new THREE.MeshLambertMaterial({ 
+            // Create cloth material with specified properties
+            const clothMaterial = new THREE.MeshStandardMaterial({
                 color: currentColor,
-                side: THREE.DoubleSide
+                roughness: 0.7,
+                metalness: 0.0,
+                side: THREE.DoubleSide,
+                transparent: false,
+                // Add subtle normal map for fabric texture
+                normalScale: new THREE.Vector2(1.2, 1.2)
             });
             
-            // Create mesh
-            tshirt = new THREE.Mesh(geometry, material);
+            // Create meshes
+            const bodyMesh = new THREE.Mesh(bodyGeometry, clothMaterial);
+            const leftSleeveMesh = new THREE.Mesh(leftSleeveGeometry, clothMaterial);
+            const rightSleeveMesh = new THREE.Mesh(rightSleeveGeometry, clothMaterial);
+            const collarMesh = new THREE.Mesh(collarGeometry, clothMaterial);
+            
+            // Add all parts to group
+            tshirtGroup.add(bodyMesh);
+            tshirtGroup.add(leftSleeveMesh);
+            tshirtGroup.add(rightSleeveMesh);
+            tshirtGroup.add(collarMesh);
+            
+            // Store reference to the group
+            tshirt = tshirtGroup;
+            tshirt.material = clothMaterial; // For easy access
+            
             scene.add(tshirt);
+        }
+        
+        function createClothGeometry(widthSegments, heightSegments, width, height) {
+            const geometry = new THREE.PlaneGeometry(width, height, widthSegments, heightSegments);
+            
+            // Add slight curvature and noise for cloth-like appearance
+            const positions = geometry.attributes.position.array;
+            const uvs = geometry.attributes.uv.array;
+            
+            for (let i = 0; i < positions.length; i += 3) {
+                const x = positions[i];
+                const y = positions[i + 1];
+                
+                // Add subtle curvature
+                positions[i + 2] = Math.sin(x * 0.5) * 0.05 + Math.sin(y * 0.3) * 0.03;
+                
+                // Add slight random variation for cloth texture
+                positions[i + 2] += (Math.random() - 0.5) * 0.01;
+            }
+            
+            geometry.computeVertexNormals();
+            return geometry;
+        }
+        
+        function createSleeveGeometry(radialSegments, heightSegments, centerX, topRadius, bottomRadius) {
+            const geometry = new THREE.CylinderGeometry(bottomRadius, topRadius, 1.2, radialSegments, heightSegments, true);
+            
+            // Position and orient the sleeve
+            geometry.translate(centerX, 0.8, 0);
+            geometry.rotateZ(Math.PI * 0.15 * Math.sign(centerX)); // Slight angle
+            
+            const positions = geometry.attributes.position.array;
+            
+            // Add cloth-like deformation
+            for (let i = 0; i < positions.length; i += 3) {
+                const x = positions[i];
+                const y = positions[i + 1];
+                const z = positions[i + 2];
+                
+                // Add subtle draping effect
+                const distance = Math.sqrt(x * x + z * z);
+                positions[i + 1] += Math.sin(distance * 3) * 0.02;
+            }
+            
+            geometry.computeVertexNormals();
+            return geometry;
+        }
+        
+        function createCollarGeometry(segments, thickness, neckRadius) {
+            const shape = new THREE.Shape();
+            
+            // Create collar shape
+            const outerRadius = neckRadius * 0.6;
+            const innerRadius = neckRadius * 0.4;
+            
+            // Outer circle
+            shape.moveTo(outerRadius, 0);
+            for (let i = 1; i <= segments; i++) {
+                const angle = (i / segments) * Math.PI * 2;
+                shape.lineTo(Math.cos(angle) * outerRadius, Math.sin(angle) * outerRadius);
+            }
+            
+            // Inner circle (hole)
+            const hole = new THREE.Path();
+            hole.moveTo(innerRadius, 0);
+            for (let i = 1; i <= segments; i++) {
+                const angle = (i / segments) * Math.PI * 2;
+                hole.lineTo(Math.cos(angle) * innerRadius, Math.sin(angle) * innerRadius);
+            }
+            shape.holes.push(hole);
+            
+            const geometry = new THREE.ExtrudeGeometry(shape, {
+                depth: thickness,
+                bevelEnabled: false
+            });
+            
+            // Position collar
+            geometry.translate(0, 1.6, -thickness / 2);
+            geometry.rotateX(-Math.PI / 2);
+            
+            return geometry;
         }
         
         function animate() {
@@ -468,11 +520,15 @@
                     userTexture.wrapS = THREE.RepeatWrapping;
                     userTexture.wrapT = THREE.RepeatWrapping;
                     
-                    // Apply texture to T-shirt
-                    if (tshirt) {
-                        tshirt.material.map = userTexture;
-                        tshirt.material.needsUpdate = true;
-                    }
+                                         // Apply texture to T-shirt (all parts)
+                     if (tshirt) {
+                         tshirt.children.forEach(child => {
+                             if (child.material) {
+                                 child.material.map = userTexture;
+                                 child.material.needsUpdate = true;
+                             }
+                         });
+                     }
                 };
                 img.src = e.target.result;
             };
@@ -489,10 +545,14 @@
             });
             event.target.classList.add('active');
             
-            // Update T-shirt color
-            if (tshirt) {
-                tshirt.material.color.setHex(color.replace('#', '0x'));
-            }
+                         // Update T-shirt color (all parts)
+             if (tshirt) {
+                 tshirt.children.forEach(child => {
+                     if (child.material) {
+                         child.material.color.setHex(color.replace('#', '0x'));
+                     }
+                 });
+             }
         }
         
         // Download mockup functionality
